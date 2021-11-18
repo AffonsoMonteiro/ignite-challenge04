@@ -1,10 +1,10 @@
-import { Component, createRef, useRef } from 'react';
+import { createRef, useRef } from 'react';
 import { FiCheckSquare } from 'react-icons/fi';
+import { FormHandles } from '@unform/core';
 
 import { Form } from './styles';
 import { Modal } from '../Modal';
 import { Input } from '../Input';
-import { FormHandles } from '@unform/core';
 
 interface AddFood {
   image: string;
@@ -13,33 +13,43 @@ interface AddFood {
   description: string;
 }
 
-interface ModalAddFoodProps {
-  isOpen: boolean;
-  setIsOpen: () => void;
-  handleAddFood: (data: AddFood) => void;
+interface IFood {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  available: boolean;
+  image: string;
 }
 
-export function ModalAddFood({ isOpen, setIsOpen, handleAddFood }: ModalAddFoodProps) {
+interface ModalEditFoodProps {
+  isOpen: boolean;
+  setIsOpen: () => void;
+  handleUpdateFood: (data: AddFood) => void;
+  editingFood: IFood;
+}
 
+export function ModalEditFood({ isOpen, setIsOpen, editingFood, handleUpdateFood}: ModalEditFoodProps) {
   const formRef = useRef<FormHandles>(null)
 
   async function handleSubmit(data: AddFood) {
-    handleAddFood(data);
+    handleUpdateFood(data);
     setIsOpen();
   };
 
-  return (
+  return(
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
-        <Form ref={formRef} onSubmit={handleSubmit}>
-          <h1>Novo Prato</h1>
+        <Form ref={formRef} onSubmit={handleSubmit} initialData={editingFood}>
+          <h1>Editar Prato</h1>
           <Input name="image" placeholder="Cole o link aqui" />
 
           <Input name="name" placeholder="Ex: Moda Italiana" />
           <Input name="price" placeholder="Ex: 19.90" />
 
           <Input name="description" placeholder="Descrição" />
-          <button type="submit" data-testid="add-food-button">
-            <p className="text">Adicionar Prato</p>
+
+          <button type="submit" data-testid="edit-food-button">
+            <div className="text">Editar Prato</div>
             <div className="icon">
               <FiCheckSquare size={24} />
             </div>
@@ -48,6 +58,3 @@ export function ModalAddFood({ isOpen, setIsOpen, handleAddFood }: ModalAddFoodP
       </Modal>
   )
 }
-
-
-export default ModalAddFood;
